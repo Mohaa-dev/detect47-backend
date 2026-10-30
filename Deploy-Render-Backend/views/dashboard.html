@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sentinel | FiveM Staff PC-Check Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 500: '#10b981', 600: '#059669' }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glow-box {
+      box-shadow: 0 0 35px -5px rgba(16, 185, 129, 0.15);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 font-sans min-h-screen">
+
+  <!-- License Key Login Overlay -->
+  <div id="loginOverlay" class="fixed inset-0 bg-slate-950/95 backdrop-blur-md z-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-2xl p-8 shadow-2xl text-center">
+      <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 text-emerald-400 mx-auto flex items-center justify-center text-2xl mb-4 border border-emerald-500/20">
+        <i class="fa-solid fa-shield-halved"></i>
+      </div>
+      <h2 class="text-2xl font-bold text-white">Staff License Login</h2>
+      <p class="text-xs text-slate-400 mt-1 mb-6">Enter your FiveM server's Sentinel license key to open the staff panel.</p>
+      
+      <form id="licenseLoginForm" onsubmit="handleLicenseLogin(event)" class="space-y-4">
+        <div class="text-left">
+          <label class="text-xs font-semibold text-slate-400 block mb-1">Server License Key</label>
+          <input type="text" id="licenseKeyInput" placeholder="e.g. CHK-PRO-XXXX-YYYY" required
+            class="w-full px-4 py-3 rounded-xl bg-slate-950 border border-slate-700 text-white font-mono uppercase focus:outline-none focus:border-emerald-500 text-sm tracking-wider">
+        </div>
+        <p id="licenseError" class="text-xs text-rose-500 hidden"></p>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-slate-950 font-bold transition flex items-center justify-center gap-2 text-sm shadow-lg shadow-emerald-500/20">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Login to Dashboard
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-slate-800/80 text-xs text-slate-500">
+        Default test key: <code class="text-emerald-400 font-mono select-all">CHK-DEMO-2026-TEST</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main App (Hidden before login) -->
+  <div id="mainApp" class="hidden min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur px-6 py-4 sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center text-slate-950 font-bold">
+            <i class="fa-solid fa-crosshairs text-base"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="navServerName" class="font-bold text-white text-base">Server Name</span>
+              <span id="navPlanBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-semibold border border-emerald-500/30">PRO</span>
+            </div>
+            <span id="navStaffName" class="text-xs text-slate-400">Staff Portal</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <a href="/download" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-download text-emerald-400"></i> Download Scanner (.exe)
+          </a>
+          <button onclick="openSettingsModal()" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5" title="Discord Webhook Settings">
+            <i class="fa-brands fa-discord text-indigo-400"></i> Webhook
+          </button>
+          <button onclick="logoutStaff()" class="text-xs px-3 py-1.5 rounded-lg bg-rose-950/60 text-rose-300 hover:bg-rose-900/60 flex items-center gap-1.5">
+            <i class="fa-solid fa-power-off"></i> Logout
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
+
+      <!-- Hero Call To Action (Start Check) -->
+      <div class="p-8 rounded-3xl bg-gradient-to-r from-slate-900 via-slate-900 to-slate-950 border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-6 glow-box">
+        <div class="space-y-2">
+          <div class="inline-flex items-center gap-2 px-2.5 py-1 rounded-md bg-emerald-500/10 text-emerald-400 text-xs font-semibold">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Anti-Cheat Inspection
+          </div>
+          <h2 class="text-2xl md:text-3xl font-extrabold text-white">Suspect a player of cheating?</h2>
+          <p class="text-slate-400 text-sm max-w-xl">Generate a secure 6-digit session PIN. Have the suspect run the Sentinel Scanner and inspect memory, Prefetch, deleted files and modified Citizen assets in real-time.</p>
+        </div>
+        <button onclick="openNewCheckModal()" class="px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 font-extrabold hover:opacity-95 transition shadow-xl shadow-emerald-500/20 flex items-center gap-3 text-base flex-shrink-0">
+          <i class="fa-solid fa-bolt text-lg"></i> Start New PC Check
+        </button>
+      </div>
+
+      <!-- Active Session Live Monitor (Visible when a check is initiated) -->
+      <div id="liveSessionContainer" class="hidden bg-slate-900 border-2 border-emerald-500/60 rounded-3xl p-6 space-y-6 glow-box">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+          <div>
+            <div class="flex items-center gap-3">
+              <span class="text-xs px-2.5 py-1 rounded-full bg-emerald-500/20 text-emerald-400 font-bold uppercase tracking-wider animate-pulse flex items-center gap-1.5">
+                <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Live Session
+              </span>
+              <h3 id="liveTargetPlayer" class="text-xl font-bold text-white">Player: Unknown</h3>
+            </div>
+            <p id="liveSessionStaffInfo" class="text-xs text-slate-400 mt-1">Initiated by: Staff</p>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <!-- 6 Digit PIN Display -->
+            <div class="px-5 py-2.5 rounded-2xl bg-slate-950 border border-slate-800 flex items-center gap-3">
+              <span class="text-xs text-slate-400 font-medium">SESSION PIN:</span>
+              <span id="livePinCode" class="font-mono text-2xl font-black text-emerald-400 tracking-widest select-all">000-000</span>
+            </div>
+
+            <button onclick="copyDiscordNotice()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs transition flex items-center gap-2 shadow-lg shadow-indigo-600/20">
+              <i class="fa-brands fa-discord"></i> Copy Discord Notice
+            </button>
+          </div>
+        </div>
+
+        <!-- Live Progress Status Bar -->
+        <div class="space-y-2">
+          <div class="flex justify-between text-xs">
+            <span id="liveProgressStep" class="font-semibold text-slate-300">Waiting for suspect to launch scanner and enter PIN...</span>
+            <span id="liveProgressPercent" class="font-bold text-emerald-400">0%</span>
+          </div>
+          <div class="w-full h-3 bg-slate-950 rounded-full overflow-hidden border border-slate-800">
+            <div id="liveProgressBar" class="h-full bg-gradient-to-r from-emerald-500 to-teal-400 transition-all duration-300 w-0"></div>
+          </div>
+        </div>
+
+        <!-- Live Results Container (Shown when scan completes) -->
+        <div id="liveResultsReport" class="hidden space-y-6 pt-4">
+          <!-- Overall Status Verdict Banner -->
+          <div id="verdictBanner" class="p-6 rounded-2xl border flex items-center justify-between">
+            <div class="flex items-center gap-4">
+              <div id="verdictIcon" class="w-14 h-14 rounded-2xl flex items-center justify-center text-3xl"></div>
+              <div>
+                <h4 id="verdictTitle" class="text-2xl font-black">CLEAN</h4>
+                <p id="verdictSubtitle" class="text-xs text-slate-300 mt-0.5"></p>
+              </div>
+            </div>
+            <button id="sendDiscordBtn" onclick="sendReportToDiscordCurrent()" class="px-4 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold flex items-center gap-2 border border-slate-700">
+              <i class="fa-brands fa-discord text-indigo-400"></i> Dispatch to Discord
+            </button>
+          </div>
+
+          <!-- Tabs / Inspection Details -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- System Specs -->
+            <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-desktop text-emerald-400"></i> Suspect Hardware & System
+              </h5>
+              <div id="resSystemInfo" class="space-y-2 text-xs text-slate-300"></div>
+            </div>
+
+            <!-- FiveM Integrity -->
+            <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-gamepad text-emerald-400"></i> FiveM & Citizen Verification
+              </h5>
+              <div id="resFiveMInfo" class="space-y-2 text-xs text-slate-300"></div>
+            </div>
+
+            <!-- Prefetch & BAM -->
+            <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-clock-rotate-left text-emerald-400"></i> Prefetch & BAM Execution History
+              </h5>
+              <div id="resPrefetchInfo" class="space-y-2 text-xs text-slate-300 max-h-48 overflow-y-auto pr-2"></div>
+            </div>
+
+            <!-- USB Timeline & Recent Deletions -->
+            <div class="p-5 rounded-2xl bg-slate-950/80 border border-slate-800">
+              <h5 class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
+                <i class="fa-solid fa-usb text-emerald-400"></i> USB Devices & Deleted Files
+              </h5>
+              <div id="resUsbInfo" class="space-y-2 text-xs text-slate-300 max-h-48 overflow-y-auto pr-2"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Past Checks History Table -->
+      <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-bold text-white">PC Checks History</h3>
+            <p class="text-xs text-slate-400 mt-0.5">Log of all checks conducted on your server</p>
+          </div>
+          <button onclick="loadHistory()" class="text-xs px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-right"></i> Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs text-slate-400 uppercase bg-slate-950/60 border-y border-slate-800">
+              <tr>
+                <th class="py-3 px-4">Player</th>
+                <th class="py-3 px-4">PIN Code</th>
+                <th class="py-3 px-4">Staff</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4">Verdict</th>
+                <th class="py-3 px-4">Date</th>
+                <th class="py-3 px-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody" class="divide-y divide-slate-800/60">
+              <tr>
+                <td colspan="7" class="py-8 text-center text-slate-500">No past checks yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Start New Check -->
+  <div id="newCheckModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-crosshairs text-emerald-400"></i> Start New PC Check
+        </h3>
+        <button onclick="closeNewCheckModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="newCheckForm" onsubmit="handleCreateSession(event)" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-400 block mb-1">Suspect Player Name / Discord Tag</label>
+          <input type="text" id="targetPlayerInput" placeholder="e.g. Karim#1337 or Discord ID" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none focus:border-emerald-500 text-sm">
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-400 block mb-1">Staff Member conducting check</label>
+          <input type="text" id="staffNameInput" placeholder="Your Admin name" value="Admin" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none focus:border-emerald-500 text-sm">
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-slate-400 block mb-1">Reason / Notes (Optional)</label>
+          <input type="text" id="notesInput" placeholder="e.g. Suspicious crosshair tracking during event"
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none focus:border-emerald-500 text-sm">
+        </div>
+
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeNewCheckModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold">Cancel</button>
+          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-400 text-slate-950 text-sm font-bold shadow-lg shadow-emerald-500/20">Generate PIN</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Webhook Settings -->
+  <div id="settingsModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-brands fa-discord text-indigo-400"></i> Discord Webhook Settings
+        </h3>
+        <button onclick="closeSettingsModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="settingsForm" onsubmit="handleSaveSettings(event)" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-slate-400 block mb-1">Server Discord Webhook URL</label>
+          <input type="url" id="discordWebhookInput" placeholder="https://discord.com/api/webhooks/..." required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-700 text-white focus:outline-none focus:border-indigo-500 text-sm">
+          <p class="text-[11px] text-slate-500 mt-1">Reports will automatically be posted to your private staff channel.</p>
+        </div>
+
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeSettingsModal()" class="w-1/2 py-2.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-sm font-semibold">Cancel</button>
+          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-sm font-bold">Save Webhook</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let licenseKey = localStorage.getItem('sentinel_license_key') || '';
+    let currentServerInfo = null;
+    let currentSession = null;
+    let ws = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (licenseKey) {
+        verifyLicenseAndLoad(licenseKey);
+      }
+    });
+
+    async function handleLicenseLogin(e) {
+      e.preventDefault();
+      const key = document.getElementById('licenseKeyInput').value.trim();
+      verifyLicenseAndLoad(key);
+    }
+
+    async function verifyLicenseAndLoad(key) {
+      try {
+        const res = await fetch('/api/staff/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.valid) {
+          licenseKey = key;
+          localStorage.setItem('sentinel_license_key', key);
+          currentServerInfo = data;
+
+          document.getElementById('navServerName').textContent = data.serverName;
+          document.getElementById('navPlanBadge').textContent = data.plan.toUpperCase();
+          document.getElementById('discordWebhookInput').value = data.discordWebhook || '';
+
+          document.getElementById('loginOverlay').classList.add('hidden');
+          document.getElementById('mainApp').classList.remove('hidden');
+
+          setupWebSocket();
+          loadHistory();
+        } else {
+          showLoginError(data.error || "Invalid license key");
+        }
+      } catch (e) {
+        showLoginError("Network connection error");
+      }
+    }
+
+    function showLoginError(msg) {
+      const err = document.getElementById('licenseError');
+      err.textContent = msg;
+      err.classList.remove('hidden');
+    }
+
+    function logoutStaff() {
+      localStorage.removeItem('sentinel_license_key');
+      location.reload();
+    }
+
+    function setupWebSocket() {
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}`);
+
+      ws.onopen = () => {
+        if (licenseKey) {
+          ws.send(JSON.stringify({ action: 'subscribe_license', licenseKey }));
+        }
+        if (currentSession) {
+          ws.send(JSON.stringify({ action: 'subscribe_session', sessionId: currentSession.id }));
+        }
+      };
+
+      ws.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.event === 'progress' && currentSession && msg.sessionId === currentSession.id) {
+            updateLiveProgress(msg.payload.step, msg.payload.percent);
+          } else if (msg.event === 'completed' && currentSession && msg.sessionId === currentSession.id) {
+            renderScanResults(msg.payload);
+            loadHistory();
+          }
+        } catch (e) {}
+      };
+    }
+
+    function openNewCheckModal() {
+      document.getElementById('newCheckModal').classList.remove('hidden');
+    }
+
+    function closeNewCheckModal() {
+      document.getElementById('newCheckModal').classList.add('hidden');
+    }
+
+    async function handleCreateSession(e) {
+      e.preventDefault();
+      const targetPlayer = document.getElementById('targetPlayerInput').value.trim();
+      const staffName = document.getElementById('staffNameInput').value.trim();
+      const notes = document.getElementById('notesInput').value.trim();
+
+      try {
+        const res = await fetch('/api/staff/create-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-license-key': licenseKey
+          },
+          body: JSON.stringify({ targetPlayer, staffName, notes })
+        });
+
+        if (res.ok) {
+          const session = await res.json();
+          currentSession = session;
+          closeNewCheckModal();
+          showLiveSession(session);
+
+          if (ws && ws.readyState === 1) {
+            ws.send(JSON.stringify({ action: 'subscribe_session', sessionId: session.id }));
+          }
+        } else {
+          alert('Failed to create session');
+        }
+      } catch (err) {
+        alert('Connection error');
+      }
+    }
+
+    function showLiveSession(session) {
+      const container = document.getElementById('liveSessionContainer');
+      container.classList.remove('hidden');
+      container.scrollIntoView({ behavior: 'smooth' });
+
+      document.getElementById('liveTargetPlayer').textContent = `Target: ${session.targetPlayer}`;
+      document.getElementById('liveSessionStaffInfo').textContent = `Staff: ${session.staffName} • Session: ${session.id}`;
+      document.getElementById('livePinCode').textContent = `${session.pin.slice(0, 3)}-${session.pin.slice(3)}`;
+
+      // Reset progress
+      updateLiveProgress("Waiting for player to download tool and enter PIN...", 0);
+      document.getElementById('liveResultsReport').classList.add('hidden');
+    }
+
+    function updateLiveProgress(step, percent) {
+      document.getElementById('liveProgressStep').textContent = step;
+      document.getElementById('liveProgressPercent').textContent = percent + '%';
+      document.getElementById('liveProgressBar').style.width = percent + '%';
+    }
+
+    function copyDiscordNotice() {
+      if (!currentSession) return;
+      const downloadUrl = `${window.location.origin}/download`;
+      const pinFormatted = `${currentSession.pin.slice(0, 3)}-${currentSession.pin.slice(3)}`;
+      
+      const message = `⚠️ **FIVE-M PC CHECK REQUEST**\n` +
+        `**Server:** ${currentServerInfo?.serverName || 'Staff'}\n` +
+        `**Player:** \`${currentSession.targetPlayer}\`\n\n` +
+        `📥 **Download Scanner Tool:** ${downloadUrl}\n` +
+        `🔑 **Your 6-Digit PIN:** \`${pinFormatted}\`\n\n` +
+        `⏳ You have **5 minutes** to launch the scanner and type your PIN. Do not close GTA or restart your PC.`;
+
+      navigator.clipboard.writeText(message);
+      alert('Discord PC Check notice copied to clipboard! Paste it to the player.');
+    }
+
+    function renderScanResults(session) {
+      currentSession = session;
+      updateLiveProgress("Scan Completed Successfully", 100);
+
+      const reportDiv = document.getElementById('liveResultsReport');
+      reportDiv.classList.remove('hidden');
+
+      const results = session.results;
+      if (!results) return;
+
+      // Verdict Banner
+      const verdict = results.overallStatus || 'CLEAN';
+      const banner = document.getElementById('verdictBanner');
+      const icon = document.getElementById('verdictIcon');
+      const title = document.getElementById('verdictTitle');
+      const sub = document.getElementById('verdictSubtitle');
+
+      if (verdict === 'DETECTED') {
+        banner.className = 'p-6 rounded-2xl border border-rose-500/60 bg-rose-950/40 text-rose-300';
+        icon.className = 'w-14 h-14 rounded-2xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-3xl border border-rose-500/30';
+        icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        title.className = 'text-2xl font-black text-rose-400';
+        title.textContent = '🚨 CHEAT / MODIFICATION DETECTED';
+        sub.textContent = 'Blacklisted executables, modded citizen assets, or injection signatures were found on this PC.';
+      } else if (verdict === 'WARNING') {
+        banner.className = 'p-6 rounded-2xl border border-amber-500/60 bg-amber-950/40 text-amber-300';
+        icon.className = 'w-14 h-14 rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-3xl border border-amber-500/30';
+        icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+        title.className = 'text-2xl font-black text-amber-400';
+        title.textContent = '⚠️ SUSPICIOUS ANOMALIES FOUND';
+        sub.textContent = 'Files were recently deleted before check, or external USB activity was detected.';
+      } else {
+        banner.className = 'p-6 rounded-2xl border border-emerald-500/60 bg-emerald-950/40 text-emerald-300';
+        icon.className = 'w-14 h-14 rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-3xl border border-emerald-500/30';
+        icon.innerHTML = '<i class="fa-solid fa-shield-check"></i>';
+        title.className = 'text-2xl font-black text-emerald-400';
+        title.textContent = '✅ SYSTEM CLEAN';
+        sub.textContent = 'No known cheat signatures, illegal citizen modifications, or evasion attempts found.';
+      }
+
+      // Populate System Info
+      const sys = results.systemInfo || {};
+      document.getElementById('resSystemInfo').innerHTML = `
+        <div class="flex justify-between border-b border-slate-900 pb-1"><span>Computer Name:</span><span class="font-bold text-white">${sys.pcName || 'N/A'}</span></div>
+        <div class="flex justify-between border-b border-slate-900 pb-1"><span>Windows User:</span><span class="font-bold text-white">${sys.username || 'N/A'}</span></div>
+        <div class="flex justify-between border-b border-slate-900 pb-1"><span>Operating System:</span><span class="text-slate-300">${sys.os || 'Windows'}</span></div>
+        <div class="flex justify-between border-b border-slate-900 pb-1"><span>Processor (CPU):</span><span class="text-slate-300">${sys.cpu || 'N/A'}</span></div>
+        <div class="flex justify-between"><span>Memory (RAM):</span><span class="text-slate-300">${sys.ram || 'N/A'}</span></div>
+      `;
+
+      // FiveM Integrity
+      const fv = results.fivem || {};
+      const moddedRpfs = (fv.rpfFiles || []).filter(r => r.isModded);
+      document.getElementById('resFiveMInfo').innerHTML = `
+        <div class="flex justify-between border-b border-slate-900 pb-1"><span>FiveM Installed:</span><span class="${fv.installed ? 'text-emerald-400 font-bold' : 'text-slate-500'}">${fv.installed ? 'Yes' : 'Not detected in standard path'}</span></div>
+        <div class="flex justify-between border-b border-slate-900 pb-1"><span>Citizen Mods:</span><span class="${(fv.citizenMods && fv.citizenMods.length > 0) ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${fv.citizenMods?.length || 0} files</span></div>
+        <div class="flex justify-between"><span>Modded RPFs:</span><span class="${moddedRpfs.length > 0 ? 'text-rose-400 font-bold' : 'text-emerald-400'}">${moddedRpfs.length} detected</span></div>
+        ${fv.citizenMods && fv.citizenMods.length > 0 ? `<div class="mt-2 text-rose-300 font-mono text-[11px] bg-rose-950/50 p-2 rounded">${fv.citizenMods.map(m => m.name).join(', ')}</div>` : ''}
+      `;
+
+      // Prefetch & BAM
+      const pf = results.prefetch || {};
+      const suspiciousPrefetch = pf.suspiciousMatches || [];
+      document.getElementById('resPrefetchInfo').innerHTML = `
+        <div class="text-slate-400 text-[11px] mb-2">Scanned ${pf.scannedCount || 0} prefetch records.</div>
+        ${suspiciousPrefetch.length > 0 ? `
+          <div class="p-2 rounded bg-rose-950/60 border border-rose-800 text-rose-300 text-xs">
+            <span class="font-bold">🚨 Cheat Executions Detected:</span>
+            <ul class="list-disc list-inside mt-1">
+              ${suspiciousPrefetch.map(s => `<li><span class="font-mono">${s.name}</span> — Run at ${new Date(s.lastRun).toLocaleTimeString()}</li>`).join('')}
+            </ul>
+          </div>
+        ` : `<div class="text-emerald-400 text-xs flex items-center gap-1.5"><i class="fa-solid fa-check"></i> No blacklisted cheats in Prefetch</div>`}
+      `;
+
+      // USB & Deleted
+      const usb = results.usbHistory || {};
+      const del = results.recentDeleted || {};
+      document.getElementById('resUsbInfo').innerHTML = `
+        <div class="mb-2">
+          <span class="font-semibold text-slate-300">USB Devices:</span> 
+          <span class="text-slate-400">${usb.devices?.length || 0} logged</span>
+        </div>
+        <div>
+          <span class="font-semibold text-slate-300">Recently Deleted Files:</span> 
+          <span class="${del.files?.length > 0 ? 'text-amber-400' : 'text-emerald-400'}">${del.files?.length || 0} detected</span>
+        </div>
+      `;
+    }
+
+    async function loadHistory() {
+      try {
+        const res = await fetch('/api/staff/sessions', {
+          headers: { 'x-license-key': licenseKey }
+        });
+        const sessions = await res.json();
+        renderHistoryTable(sessions);
+      } catch (err) {
+        console.error(err);
+      }
+    }
+
+    function renderHistoryTable(sessions) {
+      const tbody = document.getElementById('historyTableBody');
+      if (!sessions || sessions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500">No checks performed yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = sessions.map(s => {
+        const pinFormatted = `${s.pin.slice(0, 3)}-${s.pin.slice(3)}`;
+        let verdictBadge = `<span class="px-2 py-0.5 rounded text-xs bg-slate-800 text-slate-400">Pending</span>`;
+        if (s.results) {
+          if (s.results.overallStatus === 'DETECTED') {
+            verdictBadge = `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-bold">DETECTED</span>`;
+          } else if (s.results.overallStatus === 'WARNING') {
+            verdictBadge = `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-bold">WARNING</span>`;
+          } else {
+            verdictBadge = `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-bold">CLEAN</span>`;
+          }
+        }
+
+        return `
+          <tr class="hover:bg-slate-800/30 transition">
+            <td class="py-3 px-4 font-bold text-white">${s.targetPlayer}</td>
+            <td class="py-3 px-4 font-mono text-xs text-emerald-400">${pinFormatted}</td>
+            <td class="py-3 px-4 text-xs text-slate-400">${s.staffName}</td>
+            <td class="py-3 px-4 text-xs capitalize text-slate-300">${s.status}</td>
+            <td class="py-3 px-4">${verdictBadge}</td>
+            <td class="py-3 px-4 text-xs text-slate-400">${new Date(s.createdAt).toLocaleTimeString()}</td>
+            <td class="py-3 px-4 text-right">
+              ${s.results ? `<button onclick='viewSessionDetail("${s.id}")' class="text-xs px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 text-slate-300">View Report</button>` : `<span class="text-xs text-slate-600">—</span>`}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function viewSessionDetail(sessionId) {
+      try {
+        const res = await fetch(`/api/staff/sessions/${sessionId}`, {
+          headers: { 'x-license-key': licenseKey }
+        });
+        const session = await res.json();
+        currentSession = session;
+        showLiveSession(session);
+        renderScanResults(session);
+      } catch (err) {}
+    }
+
+    function openSettingsModal() {
+      document.getElementById('settingsModal').classList.remove('hidden');
+    }
+
+    function closeSettingsModal() {
+      document.getElementById('settingsModal').classList.add('hidden');
+    }
+
+    async function handleSaveSettings(e) {
+      e.preventDefault();
+      const webhook = document.getElementById('discordWebhookInput').value.trim();
+      try {
+        await fetch('/api/staff/settings', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-license-key': licenseKey
+          },
+          body: JSON.stringify({ discordWebhook: webhook })
+        });
+        alert('Discord Webhook updated successfully!');
+        closeSettingsModal();
+      } catch (e) {
+        alert('Error saving settings');
+      }
+    }
+  </script>
+</body>
+</html>

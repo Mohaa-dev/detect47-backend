@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>47Detect | Customer Command Center</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: { 500: '#ef4444', 600: '#dc2626' }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans min-h-screen">
+
+  <!-- Customer License Login Overlay -->
+  <div id="loginOverlay" class="fixed inset-0 bg-zinc-950/98 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 mx-auto flex items-center justify-center text-3xl mb-4 border border-red-500/20">
+        <i class="fa-solid fa-crosshairs"></i>
+      </div>
+      <h2 class="text-2xl font-black text-white">47DETECT CUSTOMER PORTAL</h2>
+      <p class="text-xs text-zinc-400 mt-1 mb-6">Enter your server's license key to access live PC check results.</p>
+      
+      <form id="licenseLoginForm" onsubmit="handleCustomerLogin(event)" class="space-y-4">
+        <div class="text-left">
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Server License Key</label>
+          <input type="text" id="licenseKeyInput" placeholder="47D-PRO-XXXX-YYYY" required
+            class="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-700 text-red-400 font-mono uppercase focus:outline-none focus:border-red-500 text-sm tracking-wider font-bold">
+        </div>
+        <p id="loginError" class="text-xs text-red-500 hidden font-semibold"></p>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold transition flex items-center justify-center gap-2 text-sm shadow-lg shadow-red-600/30">
+          <i class="fa-solid fa-arrow-right-to-bracket"></i> Open Command Center
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Main App (Customer View) -->
+  <div id="mainApp" class="hidden min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="border-b border-zinc-800 bg-zinc-900/60 backdrop-blur px-6 py-4 sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-9 h-9 rounded-xl bg-red-600 flex items-center justify-center text-white font-black text-sm">
+            47
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="navServerName" class="font-bold text-white text-base">Server Name</span>
+              <span id="navPlanBadge" class="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 font-bold border border-emerald-500/30">PRO</span>
+            </div>
+            <span id="navExpiryText" class="text-[11px] text-zinc-400">Subscription Active</span>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-4">
+          <button onclick="openWebhookModal()" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 flex items-center gap-1.5">
+            <i class="fa-brands fa-discord text-indigo-400"></i> Discord Webhook
+          </button>
+          <a href="/download" class="text-xs px-3 py-1.5 rounded-lg bg-red-950/60 text-red-300 hover:bg-red-900/60 flex items-center gap-1.5 border border-red-800/40">
+            <i class="fa-solid fa-download"></i> Download 47Detect.exe
+          </a>
+          <button onclick="logoutCustomer()" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-400 hover:text-white">
+            <i class="fa-solid fa-power-off"></i>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
+
+      <!-- Action Card: Generate Check PIN -->
+      <div class="p-6 rounded-3xl bg-zinc-900/90 border border-zinc-800 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl">
+        <div class="space-y-1">
+          <div class="inline-flex items-center gap-2 px-2.5 py-0.5 rounded-md bg-red-500/10 text-red-400 text-xs font-bold">
+            <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Live Screen-Check Session
+          </div>
+          <h2 class="text-xl md:text-2xl font-black text-white">Initiate Forensic Inspection</h2>
+          <p class="text-zinc-400 text-xs">Generate a 6-digit session code and send it to the suspect player to begin inspection.</p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <button onclick="openNewCheckModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-extrabold hover:opacity-90 transition shadow-lg shadow-red-600/30 flex items-center gap-2 text-sm">
+            <i class="fa-solid fa-bolt"></i> Generate Session PIN
+          </button>
+        </div>
+      </div>
+
+      <!-- Active Check Box (Shown when a PIN is generated) -->
+      <div id="activePinCard" class="hidden p-6 rounded-3xl bg-zinc-900 border-2 border-red-500/60 space-y-4">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs text-red-400 font-bold uppercase tracking-wider">Active PIN Generated:</span>
+            <div id="activePinDisplay" class="text-4xl font-black text-white font-mono tracking-widest mt-1">000-000</div>
+            <p id="activeTargetPlayer" class="text-xs text-zinc-400 mt-1">Target: Suspect</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="copyDiscordNotice()" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-2 shadow-lg shadow-indigo-600/20">
+              <i class="fa-brands fa-discord"></i> Copy Discord Notice
+            </button>
+          </div>
+        </div>
+        <div class="text-xs text-zinc-400 bg-zinc-950 p-3 rounded-xl border border-zinc-800">
+          ⏳ Tell the suspect to open <strong>47Detect.exe</strong> and type the PIN. The deep telemetry and results will appear below automatically!
+        </div>
+      </div>
+
+      <!-- Live Inspections History & Deep Reports Table -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-bold text-white">Forensic Inspection Reports</h3>
+            <p class="text-xs text-zinc-400 mt-0.5">Full deep forensic telemetries conducted on your server</p>
+          </div>
+          <button onclick="loadCustomerSessions()" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-rotate-right"></i> Refresh
+          </button>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs text-zinc-400 uppercase bg-zinc-950/60 border-y border-zinc-800">
+              <tr>
+                <th class="py-3 px-4">Player</th>
+                <th class="py-3 px-4">PIN Code</th>
+                <th class="py-3 px-4">Staff</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4">Verdict</th>
+                <th class="py-3 px-4">Audited Items</th>
+                <th class="py-3 px-4">Date</th>
+                <th class="py-3 px-4 text-right">Action</th>
+              </tr>
+            </thead>
+            <tbody id="sessionsTableBody" class="divide-y divide-zinc-800/60">
+              <tr>
+                <td colspan="8" class="py-8 text-center text-zinc-500">No inspections conducted yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Deep Report Details View -->
+  <div id="reportModal" class="fixed inset-0 bg-zinc-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="max-w-3xl w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between pb-4 border-b border-zinc-800">
+        <div>
+          <h3 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-file-waveform text-red-500"></i> Forensic Inspection Report
+          </h3>
+          <p id="modalSessionSubtitle" class="text-xs text-zinc-400 mt-0.5">Player: Unknown</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <a id="modalDirectLinkBtn" target="_blank" href="#" class="px-3 py-1.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-xs font-semibold text-zinc-200 border border-zinc-700 flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-arrow-up-right-from-square text-[11px] text-red-400"></i> Open Dedicated Link
+          </a>
+          <button onclick="closeReportModal()" class="w-8 h-8 rounded-lg bg-zinc-800/80 hover:bg-zinc-700 text-zinc-400 hover:text-white flex items-center justify-center transition">
+            <i class="fa-solid fa-xmark text-sm"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Scrollable Report Body -->
+      <div class="overflow-y-auto py-4 space-y-5 flex-1 text-xs">
+        <!-- Verdict Banner -->
+        <div id="modalVerdictBanner" class="p-4 rounded-xl border flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div id="modalVerdictIcon" class="w-10 h-10 rounded-xl flex items-center justify-center text-xl font-bold"></div>
+            <div>
+              <h4 id="modalVerdictTitle" class="text-base font-black">CLEAN</h4>
+              <p id="modalVerdictSubtitle" class="text-[11px] text-zinc-300 mt-0.5"></p>
+            </div>
+          </div>
+          <button id="modalDispatchDiscordBtn" onclick="dispatchModalDiscord()" class="px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-white font-semibold flex items-center gap-1.5 border border-zinc-700 text-[11px]">
+            <i class="fa-brands fa-discord text-indigo-400"></i> Send to Discord
+          </button>
+        </div>
+
+        <!-- Detections Flags -->
+        <div class="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-2">
+          <span class="font-bold text-zinc-400 uppercase tracking-wider block">🚩 Detected Threats &amp; Violations:</span>
+          <div id="modalFlagsList" class="space-y-2"></div>
+        </div>
+
+        <!-- Hardware & FiveM Details -->
+        <div class="grid grid-cols-2 gap-4">
+          <div class="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+            <span class="font-bold text-zinc-400 uppercase tracking-wider block mb-2">💻 Suspect Hardware:</span>
+            <div id="modalHardwareInfo" class="space-y-1 text-zinc-300"></div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-zinc-950 border border-zinc-800 space-y-1.5">
+            <span class="font-bold text-zinc-400 uppercase tracking-wider block mb-2">📁 FiveM Integrity:</span>
+            <div id="modalFiveMInfo" class="space-y-1 text-zinc-300"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Generate PIN -->
+  <div id="newCheckModal" class="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-key text-red-500"></i> Generate PC-Check PIN
+        </h3>
+        <button onclick="closeNewCheckModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="newCheckForm" onsubmit="handleCreateSession(event)" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Suspect Player Name / Discord ID</label>
+          <input type="text" id="targetPlayerInput" placeholder="e.g. Player#1337" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Staff Member Conducting Check</label>
+          <input type="text" id="staffNameInput" value="Staff" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+        </div>
+
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeNewCheckModal()" class="w-1/2 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold">Cancel</button>
+          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white text-xs font-bold shadow-lg shadow-red-600/30">Generate PIN</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal: Discord Webhook -->
+  <div id="webhookModal" class="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-base font-bold text-white flex items-center gap-2">
+          <i class="fa-brands fa-discord text-indigo-400"></i> Discord Webhook Integration
+        </h3>
+        <button onclick="closeWebhookModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="webhookForm" onsubmit="handleSaveWebhook(event)" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Discord Webhook URL</label>
+          <input type="url" id="webhookUrlInput" placeholder="https://discord.com/api/webhooks/..." required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-indigo-500 text-sm">
+          <p class="text-[11px] text-zinc-500 mt-1">Full color-coded reports will automatically be dispatched to this channel.</p>
+        </div>
+
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeWebhookModal()" class="w-1/2 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-xs font-semibold">Cancel</button>
+          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold">Save Webhook</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let licenseKey = localStorage.getItem('47detect_customer_key') || '';
+    let currentLicenseInfo = null;
+    let activeSession = null;
+    let selectedReportSession = null;
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (licenseKey) {
+        verifyLicenseAndLoad(licenseKey);
+      }
+    });
+
+    async function handleCustomerLogin(e) {
+      e.preventDefault();
+      const key = document.getElementById('licenseKeyInput').value.trim();
+      verifyLicenseAndLoad(key);
+    }
+
+    async function verifyLicenseAndLoad(key) {
+      try {
+        const res = await fetch('/api/customer/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key })
+        });
+        const data = await res.json();
+        if (res.ok && data.valid) {
+          licenseKey = key;
+          localStorage.setItem('47detect_customer_key', key);
+          currentLicenseInfo = data;
+
+          document.getElementById('navServerName').textContent = data.serverName;
+          document.getElementById('navPlanBadge').textContent = data.plan.toUpperCase();
+          document.getElementById('webhookUrlInput').value = data.discordWebhook || '';
+
+          const expiryDate = data.expiresAt ? new Date(data.expiresAt).toLocaleDateString() : 'Lifetime';
+          document.getElementById('navExpiryText').textContent = `Expires: ${expiryDate} • Seats: ${data.maxUsers}`;
+
+          document.getElementById('loginOverlay').classList.add('hidden');
+          document.getElementById('mainApp').classList.remove('hidden');
+
+          loadCustomerSessions();
+        } else {
+          document.getElementById('loginError').textContent = data.error || 'Invalid license key';
+          document.getElementById('loginError').classList.remove('hidden');
+        }
+      } catch (e) {
+        document.getElementById('loginError').textContent = 'Network error connecting to server';
+        document.getElementById('loginError').classList.remove('hidden');
+      }
+    }
+
+    function logoutCustomer() {
+      localStorage.removeItem('47detect_customer_key');
+      location.reload();
+    }
+
+    async function loadCustomerSessions() {
+      try {
+        const res = await fetch('/api/customer/sessions', {
+          headers: { 'x-license-key': licenseKey }
+        });
+        const sessions = await res.json();
+        renderSessionsTable(sessions);
+      } catch (err) {}
+    }
+
+    function renderSessionsTable(sessions) {
+      const tbody = document.getElementById('sessionsTableBody');
+      if (!sessions || sessions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="py-8 text-center text-zinc-500">No inspections conducted yet. Click "Generate Session PIN" to start.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = sessions.map(s => {
+        const pinFormatted = `${s.pin.slice(0, 3)}-${s.pin.slice(3)}`;
+        let verdictBadge = `<span class="px-2 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400">PENDING</span>`;
+        if (s.results) {
+          if (s.results.OverallStatus === 'DETECTED') {
+            verdictBadge = `<span class="px-2.5 py-0.5 rounded-full bg-rose-500/20 text-rose-400 border border-rose-500/30 text-xs font-black">DETECTED</span>`;
+          } else if (s.results.OverallStatus === 'WARNING') {
+            verdictBadge = `<span class="px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 text-xs font-black">WARNING</span>`;
+          } else {
+            verdictBadge = `<span class="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 text-xs font-black">CLEAN</span>`;
+          }
+        }
+
+        const auditedCount = s.results?.TotalItemsAudited ? Number(s.results.TotalItemsAudited).toLocaleString() : '—';
+
+        return `
+          <tr class="hover:bg-zinc-800/30 transition">
+            <td class="py-3 px-4 font-bold text-white">${s.targetPlayer}</td>
+            <td class="py-3 px-4 font-mono text-xs text-red-400 font-bold">${pinFormatted}</td>
+            <td class="py-3 px-4 text-xs text-zinc-400">${s.staffName}</td>
+            <td class="py-3 px-4 text-xs capitalize text-zinc-300">${s.status}</td>
+            <td class="py-3 px-4">${verdictBadge}</td>
+            <td class="py-3 px-4 text-xs text-zinc-400">${auditedCount} items</td>
+            <td class="py-3 px-4 text-xs text-zinc-400">${new Date(s.createdAt).toLocaleTimeString()}</td>
+            <td class="py-3 px-4 text-right">
+              ${s.results ? `<button onclick='viewReportDetails("${s.id}")' class="text-xs px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold border border-zinc-700">View Deep Report</button>` : `<span class="text-xs text-zinc-600">—</span>`}
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openNewCheckModal() {
+      document.getElementById('newCheckModal').classList.remove('hidden');
+    }
+
+    function closeNewCheckModal() {
+      document.getElementById('newCheckModal').classList.add('hidden');
+    }
+
+    async function handleCreateSession(e) {
+      e.preventDefault();
+      const targetPlayer = document.getElementById('targetPlayerInput').value.trim();
+      const staffName = document.getElementById('staffNameInput').value.trim();
+
+      try {
+        const res = await fetch('/api/customer/create-session', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-license-key': licenseKey
+          },
+          body: JSON.stringify({ targetPlayer, staffName })
+        });
+
+        if (res.ok) {
+          const session = await res.json();
+          activeSession = session;
+          closeNewCheckModal();
+
+          document.getElementById('activePinCard').classList.remove('hidden');
+          document.getElementById('activePinDisplay').textContent = `${session.pin.slice(0, 3)}-${session.pin.slice(3)}`;
+          document.getElementById('activeTargetPlayer').textContent = `Target: ${session.targetPlayer} • Staff: ${session.staffName}`;
+
+          loadCustomerSessions();
+        } else {
+          alert('Failed to generate session PIN');
+        }
+      } catch (err) {
+        alert('Connection error');
+      }
+    }
+
+    function copyDiscordNotice() {
+      if (!activeSession) return;
+      const downloadUrl = `${window.location.origin}/download`;
+      const pinFormatted = `${activeSession.pin.slice(0, 3)}-${activeSession.pin.slice(3)}`;
+      
+      const message = `⚠️ **47DETECT FORENSIC PC-CHECK REQUEST**\n` +
+        `**Server:** ${currentLicenseInfo?.serverName || 'Staff'}\n` +
+        `**Player:** \`${activeSession.targetPlayer}\`\n\n` +
+        `📥 **Download 47Detect Client:** ${downloadUrl}\n` +
+        `🔑 **Your 6-Digit PIN:** \`${pinFormatted}\`\n\n` +
+        `⏳ Launch **47Detect.exe**, enter your 6-digit PIN, and start the scan. Do not close GTA or restart your PC.`;
+
+      navigator.clipboard.writeText(message);
+      alert('Discord PC-Check notice copied to clipboard! Paste it to the player.');
+    }
+
+    async function viewReportDetails(sessionId) {
+      try {
+        const res = await fetch(`/api/customer/sessions/${sessionId}`, {
+          headers: { 'x-license-key': licenseKey }
+        });
+        const session = await res.json();
+        selectedReportSession = session;
+
+        document.getElementById('modalSessionSubtitle').textContent = `Target: ${session.targetPlayer} • Staff: ${session.staffName} • Session: ${session.id}`;
+        document.getElementById('modalDirectLinkBtn').href = '/report/' + session.id;
+        const results = session.results;
+
+        // Verdict Banner
+        const verdict = results.OverallStatus || 'CLEAN';
+        const banner = document.getElementById('modalVerdictBanner');
+        const icon = document.getElementById('modalVerdictIcon');
+        const title = document.getElementById('modalVerdictTitle');
+        const sub = document.getElementById('modalVerdictSubtitle');
+
+        if (verdict === 'DETECTED') {
+          banner.className = 'p-4 rounded-xl border border-rose-500/60 bg-rose-950/40 text-rose-300';
+          icon.className = 'w-10 h-10 rounded-xl bg-rose-500/20 text-rose-400 flex items-center justify-center text-xl font-bold';
+          icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+          title.className = 'text-base font-black text-rose-400';
+          title.textContent = '🚨 CHEAT OR UNAUTHORIZED INJECTION DETECTED';
+          sub.textContent = 'Blacklisted executables, Lua hooks, or anti-forensic tampering identified on target PC.';
+        } else if (verdict === 'WARNING') {
+          banner.className = 'p-4 rounded-xl border border-amber-500/60 bg-amber-950/40 text-amber-300';
+          icon.className = 'w-10 h-10 rounded-xl bg-amber-500/20 text-amber-400 flex items-center justify-center text-xl font-bold';
+          icon.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+          title.className = 'text-base font-black text-amber-400';
+          title.textContent = '⚠️ SUSPICIOUS ANOMALY FOUND';
+          sub.textContent = 'Files were recently panic-deleted or external USB devices were manipulated.';
+        } else {
+          banner.className = 'p-4 rounded-xl border border-emerald-500/60 bg-emerald-950/40 text-emerald-300';
+          icon.className = 'w-10 h-10 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl font-bold';
+          icon.innerHTML = '<i class="fa-solid fa-shield-check"></i>';
+          title.className = 'text-base font-black text-emerald-400';
+          title.textContent = '✅ SYSTEM VERIFIED CLEAN';
+          sub.textContent = 'No unauthorized software or anti-forensic evasion identified.';
+        }
+
+        // Flags
+        const flagsDiv = document.getElementById('modalFlagsList');
+        const flags = results.Flags || [];
+        if (flags.length === 0) {
+          flagsDiv.innerHTML = `<span class="text-emerald-400 font-semibold">✓ No suspicious flags detected across ${results.TotalItemsAudited || 0} audited items.</span>`;
+        } else {
+          flagsDiv.innerHTML = flags.map(f => `
+            <div class="p-2.5 rounded-lg bg-zinc-900 border ${f.Severity === 'danger' ? 'border-rose-800 text-rose-300' : 'border-amber-800 text-amber-300'}">
+              <span class="font-bold">${f.Message}</span>
+              <p class="text-[11px] text-zinc-400 mt-0.5">${f.Details}</p>
+            </div>
+          `).join('');
+        }
+
+        // Hardware
+        const sys = results.SystemInfo || {};
+        document.getElementById('modalHardwareInfo').innerHTML = `
+          <div><span class="text-zinc-500">PC Name:</span> <strong>${sys.PcName || 'N/A'}</strong></div>
+          <div><span class="text-zinc-500">Windows User:</span> <strong>${sys.Username || 'N/A'}</strong></div>
+          <div><span class="text-zinc-500">OS:</span> ${sys.OS || 'Windows'}</div>
+          <div><span class="text-zinc-500">Processor:</span> ${sys.Cpu || 'N/A'}</div>
+          <div><span class="text-zinc-500">RAM:</span> ${sys.Ram || 'N/A'}</div>
+        `;
+
+        // FiveM
+        const fv = results.FiveM || {};
+        document.getElementById('modalFiveMInfo').innerHTML = `
+          <div><span class="text-zinc-500">Installed:</span> ${fv.Installed ? 'Yes' : 'Not in standard path'}</div>
+          <div><span class="text-zinc-500">Citizen Mods:</span> ${fv.CitizenMods?.length || 0} files</div>
+          <div><span class="text-zinc-500">RPF Files Scanned:</span> ${fv.RpfFiles?.length || 0}</div>
+          <div><span class="text-zinc-500">Audited Artifacts:</span> ${Number(results.TotalItemsAudited || 0).toLocaleString()}</div>
+        `;
+
+        document.getElementById('reportModal').classList.remove('hidden');
+      } catch (e) {}
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.add('hidden');
+    }
+
+    function openWebhookModal() {
+      document.getElementById('webhookModal').classList.remove('hidden');
+    }
+
+    function closeWebhookModal() {
+      document.getElementById('webhookModal').classList.add('hidden');
+    }
+
+    async function handleSaveWebhook(e) {
+      e.preventDefault();
+      const discordWebhook = document.getElementById('webhookUrlInput').value.trim();
+      await fetch('/api/customer/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-license-key': licenseKey },
+        body: JSON.stringify({ discordWebhook })
+      });
+      alert('Discord webhook saved successfully!');
+      closeWebhookModal();
+    }
+  </script>
+</body>
+</html>

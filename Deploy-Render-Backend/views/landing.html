@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>47Detect | Ultimate FiveM Forensic Screen-Check Engine</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fef2f2',
+              500: '#ef4444',
+              600: '#dc2626',
+              700: '#b91c1c'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .glow-red {
+      box-shadow: 0 0 50px -10px rgba(239, 68, 68, 0.3);
+    }
+    .grid-bg {
+      background-size: 40px 40px;
+      background-image: linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                        linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans min-h-screen flex flex-col grid-bg">
+
+  <!-- Navbar (Strictly public: NO owner or staff web links) -->
+  <nav class="border-b border-zinc-800/80 backdrop-blur-md sticky top-0 z-50 bg-zinc-950/80 px-6 py-4">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <img src="/logo.svg" alt="47Detect Logo" class="w-10 h-10 object-contain drop-shadow">
+        <div>
+          <span class="text-xl font-black tracking-wider text-white">47<span class="text-red-500">DETECT</span></span>
+          <span class="text-[10px] px-2 py-0.5 ml-2 rounded-full bg-red-500/10 text-red-400 border border-red-500/20 font-bold uppercase tracking-widest">Forensic Engine</span>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-6">
+        <a href="#features" class="text-sm text-zinc-400 hover:text-white transition">Capabilities</a>
+        <a href="#pricing" class="text-sm text-zinc-400 hover:text-white transition">License Plans</a>
+        <a href="/download" class="text-sm px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold hover:opacity-95 transition shadow-lg shadow-red-600/30 flex items-center gap-2">
+          <i class="fa-solid fa-download"></i> Download Client (.exe)
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="max-w-7xl mx-auto px-6 pt-20 pb-16 text-center flex-1 flex flex-col items-center justify-center">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-500/10 border border-red-500/30 text-red-400 text-xs font-bold mb-6">
+      <span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
+      AGENT 47 FORENSIC PRECISION FOR FIVEM
+    </div>
+    
+    <h1 class="text-5xl md:text-7xl font-black tracking-tight text-white max-w-4xl leading-tight">
+      Unmask FiveM Cheats with <span class="text-transparent bg-clip-text bg-gradient-to-r from-red-500 via-rose-400 to-red-600">47Detect</span>
+    </h1>
+    
+    <p class="mt-6 text-lg text-zinc-400 max-w-2xl leading-relaxed">
+      A heavy-duty forensic Windows application built for elite FiveM RP and PvP servers. Detects injected Lua executors, modified RPFs, memory spoofers, and uncovers panic deletions in seconds.
+    </p>
+
+    <!-- Download CTA -->
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-5">
+      <a href="/download" class="px-9 py-4 rounded-2xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-extrabold hover:opacity-95 transition shadow-xl shadow-red-600/30 flex items-center gap-3 text-lg">
+        <i class="fa-solid fa-download text-xl"></i> Download 47Detect (.exe)
+      </a>
+      <a href="#features" class="px-7 py-4 rounded-2xl bg-zinc-900 border border-zinc-800 hover:border-zinc-700 text-zinc-300 font-semibold transition text-base flex items-center gap-2">
+        <i class="fa-solid fa-shield-halved text-red-500"></i> Explore Forensic Modules
+      </a>
+    </div>
+
+    <!-- Dual-Mode Desktop Showcase Card -->
+    <div class="mt-16 w-full max-w-4xl p-8 rounded-3xl bg-zinc-900/60 border border-zinc-800 glow-red text-left">
+      <div class="flex items-center justify-between pb-6 border-b border-zinc-800/80">
+        <div>
+          <h3 class="text-lg font-black text-white flex items-center gap-2">
+            <i class="fa-solid fa-layer-group text-red-500"></i> All-In-One Unified Desktop Application
+          </h3>
+          <p class="text-xs text-zinc-400 mt-1">Staff and players use the exact same modern desktop application.</p>
+        </div>
+        <span class="text-xs px-3 py-1 rounded-full bg-red-500/20 text-red-400 font-mono font-bold">v3.0 Standalone</span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+        <div class="p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-lg font-bold mb-3">
+            <i class="fa-solid fa-user-secret"></i>
+          </div>
+          <h4 class="font-bold text-white text-base">1. Suspect Mode (Fast PIN Scan)</h4>
+          <p class="text-xs text-zinc-400 mt-2 leading-relaxed">
+            When asked for a PC check, the player launches 47Detect, inputs their 6-digit session PIN, and clicks Start. The app inspects memory, Prefetch, BAM, Citizen assets, and sends results automatically.
+          </p>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-zinc-950/80 border border-zinc-800">
+          <div class="w-10 h-10 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-lg font-bold mb-3">
+            <i class="fa-solid fa-key"></i>
+          </div>
+          <h4 class="font-bold text-white text-base">2. Server Staff Mode (License Login)</h4>
+          <p class="text-xs text-zinc-400 mt-2 leading-relaxed">
+            Server admins click "Staff Portal" inside the desktop app, enter their purchased server license key, and can generate PIN codes, watch live scan streams, and configure Discord webhooks directly from Windows.
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Features Section -->
+  <section id="features" class="max-w-7xl mx-auto px-6 py-16">
+    <div class="text-center mb-14">
+      <h2 class="text-3xl md:text-4xl font-extrabold text-white">Detect-Grade Forensic Arsenal</h2>
+      <p class="text-zinc-400 mt-2">Zero false positives. Maximum precision against modern FiveM bypasses.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-red-500/40 transition">
+        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl mb-4">
+          <i class="fa-solid fa-crosshairs"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Executors & Injected Tools</h3>
+        <p class="text-sm text-zinc-400 leading-relaxed">
+          Comprehensive signatures for RedEngine, Eulen, Skript, tzProject, HamMenu, 0xCheats, Dopium, Lysergic, Xenos, Extreme Injector, and Cheat Engine.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-red-500/40 transition">
+        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl mb-4">
+          <i class="fa-solid fa-globe"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">DNS Cache Auth Server Sniffer</h3>
+        <p class="text-sm text-zinc-400 leading-relaxed">
+          Analyzes the Windows DNS Resolver Cache to detect recent DNS queries to known cheat licensing and authentication servers, even if the files were wiped.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-red-500/40 transition">
+        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl mb-4">
+          <i class="fa-solid fa-shield-virus"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Anti-Forensic & Evasion Detection</h3>
+        <p class="text-sm text-zinc-400 leading-relaxed">
+          Catches tampering techniques such as disabled Prefetch (EnablePrefetcher = 0), wiped Windows Audit Event Logs (Events 1102 & 104), and cleared journals.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-red-500/40 transition">
+        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl mb-4">
+          <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">FiveM Citizen & Logs Deep Parser</h3>
+        <p class="text-sm text-zinc-400 leading-relaxed">
+          Scans `citizenfx.log` for injected Lua traces (`execute_lua`, `citizen:load`), modified RPF files (no recoil, clear water, custom tracers), and illegal ASI/DLL plugins.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-red-500/40 transition">
+        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl mb-4">
+          <i class="fa-solid fa-trash-can-arrow-up"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Panic Deletion Tracking</h3>
+        <p class="text-sm text-zinc-400 leading-relaxed">
+          Recovers telemetry on files deleted from Temp, Downloads, or Desktop in the final minutes before joining the PC check channel.
+        </p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-zinc-900/40 border border-zinc-800 hover:border-red-500/40 transition">
+        <div class="w-12 h-12 rounded-xl bg-red-500/10 text-red-400 flex items-center justify-center text-xl mb-4">
+          <i class="fa-brands fa-discord"></i>
+        </div>
+        <h3 class="text-lg font-bold text-white mb-2">Instant Discord Webhook Telemetry</h3>
+        <p class="text-sm text-zinc-400 leading-relaxed">
+          Sends clean color-coded embed reports (Green for Clean, Red for Detected) straight into your private staff channel with hardware info and detection breakdown.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section id="pricing" class="max-w-7xl mx-auto px-6 py-16">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl font-extrabold text-white">Server License Packages</h2>
+      <p class="text-zinc-400 mt-2">Get your server license key and empower your moderation team.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+      <div class="p-8 rounded-2xl bg-zinc-900/60 border border-zinc-800 flex flex-col justify-between">
+        <div>
+          <h3 class="text-xl font-bold text-white">Starter Server</h3>
+          <p class="text-xs text-zinc-400 mt-1">For small RP servers</p>
+          <div class="mt-6 flex items-baseline">
+            <span class="text-4xl font-extrabold text-white">$20</span>
+            <span class="text-zinc-400 ml-2 text-sm">/ month</span>
+          </div>
+          <ul class="mt-6 space-y-3 text-sm text-zinc-300">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Up to 5 Staff seats</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> FiveM & Prefetch checks</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Discord Webhooks</li>
+          </ul>
+        </div>
+        <a href="https://discord.gg/" target="_blank" class="mt-8 block text-center py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold transition text-sm">
+          Buy License
+        </a>
+      </div>
+
+      <div class="p-8 rounded-2xl bg-zinc-900 border-2 border-red-500 relative flex flex-col justify-between shadow-xl shadow-red-500/10">
+        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-red-500 text-white text-xs font-bold uppercase tracking-wider">
+          Recommended
+        </div>
+        <div>
+          <h3 class="text-xl font-bold text-white">Pro Community</h3>
+          <p class="text-xs text-zinc-400 mt-1">For active RP & PvP servers</p>
+          <div class="mt-6 flex items-baseline">
+            <span class="text-4xl font-extrabold text-white">$40</span>
+            <span class="text-zinc-400 ml-2 text-sm">/ month</span>
+          </div>
+          <ul class="mt-6 space-y-3 text-sm text-zinc-300">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Up to 15 Staff seats</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Full Detect.ac Forensic Suite</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> DNS Cache & Event Log Anti-Forensics</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Desktop Staff Portal Access</li>
+          </ul>
+        </div>
+        <a href="https://discord.gg/" target="_blank" class="mt-8 block text-center py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold hover:opacity-95 transition text-sm">
+          Get Pro License
+        </a>
+      </div>
+
+      <div class="p-8 rounded-2xl bg-zinc-900/60 border border-zinc-800 flex flex-col justify-between">
+        <div>
+          <h3 class="text-xl font-bold text-white">Enterprise / Lifetime</h3>
+          <p class="text-xs text-zinc-400 mt-1">For tournament networks</p>
+          <div class="mt-6 flex items-baseline">
+            <span class="text-4xl font-extrabold text-white">$180</span>
+            <span class="text-zinc-400 ml-2 text-sm">/ lifetime</span>
+          </div>
+          <ul class="mt-6 space-y-3 text-sm text-zinc-300">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Unlimited Staff seats</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Custom Branding</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-red-400"></i> Lifetime Updates & VIP Support</li>
+          </ul>
+        </div>
+        <a href="https://discord.gg/" target="_blank" class="mt-8 block text-center py-3 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-white font-semibold transition text-sm">
+          Contact for Lifetime
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer (No admin links) -->
+  <footer class="mt-auto border-t border-zinc-800/80 bg-zinc-950 py-8 px-6 text-center text-zinc-500 text-xs">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      <div class="flex items-center space-x-2">
+        <img src="/logo.svg" alt="47Detect" class="w-5 h-5 object-contain">
+        <span class="font-bold text-zinc-300">47Detect Forensic Engine</span>
+      </div>
+      <p>© 2026 47Detect. Built for FiveM Screen-Check Operations.</p>
+      <div class="flex items-center space-x-4">
+        <a href="/download" class="hover:text-zinc-300">Client Download</a>
+        <a href="#pricing" class="hover:text-zinc-300">Pricing</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

@@ -1,0 +1,263 @@
+{
+  "config": {
+    "ownerSecret": "47#Detect_Master_Vault!2026",
+    "appName": "47Detect",
+    "version": "4.0.0",
+    "secretOwnerRoute": "/vault-47-admin"
+  },
+  "licenses": [
+    {
+      "id": "lic-master-47",
+      "key": "47D-PRO-MASTER-SERVER",
+      "serverName": "DZ Roleplay Official",
+      "plan": "Pro",
+      "maxUsers": 25,
+      "maxStaff": 25,
+      "status": "active",
+      "createdAt": "2026-10-30T20:00:00.000Z",
+      "expiresAt": "2026-12-30T20:00:00.000Z",
+      "discordWebhook": "",
+      "totalChecks": 2
+    },
+    {
+      "id": "lic-demo-1",
+      "key": "CHK-DEMO-2026-TEST",
+      "serverName": "Algeria FiveM Elite",
+      "plan": "Enterprise",
+      "maxUsers": 50,
+      "maxStaff": 50,
+      "status": "active",
+      "createdAt": "2026-10-30T20:48:53.774Z",
+      "expiresAt": "2026-11-29T20:48:53.775Z",
+      "discordWebhook": "",
+      "totalChecks": 1
+    }
+  ],
+  "sessions": [
+    {
+      "id": "sess-1793399720304-enqo",
+      "pin": "497703",
+      "licenseKey": "47D-PRO-MASTER-SERVER",
+      "serverName": "DZ Roleplay Official",
+      "staffName": "Staff",
+      "targetPlayer": "@dangerx9aloza2",
+      "notes": "",
+      "status": "completed",
+      "progress": {
+        "step": "Inspection Completed",
+        "percent": 100
+      },
+      "createdAt": "2026-10-30T22:35:20.304Z",
+      "expiresAt": "2026-10-30T22:50:20.304Z",
+      "results": {
+        "OverallStatus": "CLEAN",
+        "TotalItemsAudited": 998,
+        "SystemInfo": {
+          "PcName": "WIN-30IM6RNGSG5",
+          "Username": "Administrator",
+          "OS": "Microsoft Windows 10.0.19042",
+          "Cpu": "AMD Ryzen 5 PRO 5655G with Radeon Graphics",
+          "Ram": "15.9 GB"
+        },
+        "FiveM": {
+          "Installed": true,
+          "Path": "C:\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app",
+          "CitizenMods": [],
+          "RpfFiles": [
+            {
+              "Name": "streaming_surrogate.rpf",
+              "Size": 0
+            }
+          ]
+        },
+        "Prefetch": {
+          "ScannedCount": 324,
+          "SuspiciousMatches": []
+        },
+        "BamRegistry": {
+          "RecentApps": [
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\csrss.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\explorer.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\Sysprep\\sysprep.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\ApplicationFrameHost.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\dllhost.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\winver.exe",
+            "\\Device\\HarddiskVolume2\\Program Files\\Internet Explorer\\iexplore.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\cmd.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Rockstar Games\\Launcher\\Launcher.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app\\data\\cache\\subprocess\\FiveM_b3258_GTAProcess.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\ClownfishVoiceChanger\\ClownfishVoiceChanger.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\NVIDIA Corporation\\NVIDIA App\\CEF\\NVIDIA Overlay.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\explorer.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\GigabyteDownloadAssistant.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Roaming\\Spotify\\Spotify.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Rockstar Games\\Social Club\\SocialClubHelper.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\ApplicationFrameHost.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Cloudflare\\Cloudflare WARP\\Cloudflare WARP.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\rundll32.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\dllhost.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\WinRAR\\WinRAR.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\SnippingTool.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "\\Device\\HarddiskVolume3\\Riot Games\\Riot Client\\RiotClientServices.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Riot Vanguard\\vgtray.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Programs\\WinSCP\\WinSCP.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\Taskmgr.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Windows Media Player\\wmplayer.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\WerFault.exe",
+            "\\Device\\HarddiskVolume3\\xampp\\xampp-control.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\7-Zip\\7zG.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\NVIDIA Corporation\\NVIDIA App\\CEF\\NVIDIA App.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app\\data\\cache\\subprocess\\FiveM_b3570_GTAProcess.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Desktop\\sv\\FXServer.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app\\data\\cache\\subprocess\\FiveM_b3323_GTAProcess.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\EaseOfAccessDialog.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Discord\\app-1.0.9266\\Discord.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Downloads\\SteamSetup.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Steam\\Steam.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Steam\\bin\\cef\\cef.win64\\steamwebhelper.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Programs\\antigravity\\Antigravity.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\antigravity-updater\\pending\\Antigravity-x64.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Downloads\\SentinelScanner.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Desktop\\Sentinel-FiveM-PCCheck\\SentinelScanner.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Desktop\\47Detect-Platform\\47Detect.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\OpenWith.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Internet Explorer\\iexplore.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Internet Explorer\\iexplore.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Desktop\\47Detect-Platform\\server\\public\\downloads\\47Detect.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Desktop\\47Detect.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\dwm.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\dwm.exe"
+          ]
+        },
+        "UsbHistory": {
+          "Devices": [
+            "Disk&Ven_hp&Prod_v250w&Rev_PMAP"
+          ]
+        },
+        "RecentDeleted": {
+          "Files": []
+        },
+        "Processes": {
+          "ScannedCount": 178,
+          "SuspiciousProcesses": []
+        },
+        "Flags": []
+      },
+      "completedAt": "2026-10-30T22:36:11.474Z"
+    },
+    {
+      "id": "sess-1793393482208-j3jc",
+      "pin": "514734",
+      "licenseKey": "CHK-DEMO-2026-TEST",
+      "serverName": "DZ Roleplay Official",
+      "staffName": "Admin_Test",
+      "targetPlayer": "TestPlayer",
+      "notes": "Testing",
+      "status": "completed",
+      "progress": {
+        "step": "Scan Completed",
+        "percent": 100
+      },
+      "createdAt": "2026-10-30T20:51:22.208Z",
+      "expiresAt": "2026-10-30T21:06:22.208Z",
+      "results": {
+        "OverallStatus": "CLEAN",
+        "SystemInfo": {
+          "PcName": "WIN-30IM6RNGSG5",
+          "Username": "Administrator",
+          "OS": "Microsoft Windows 10.0.19042",
+          "Cpu": "AMD Ryzen 5 PRO 5655G with Radeon Graphics     ",
+          "Ram": "15.9 GB"
+        },
+        "FiveM": {
+          "Installed": true,
+          "Path": "C:\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app",
+          "CitizenMods": [],
+          "RpfFiles": [
+            {
+              "Name": "streaming_surrogate.rpf",
+              "Size": 0,
+              "LastModified": "2026-09-10T20:15:56.0858717Z",
+              "IsModded": false
+            }
+          ]
+        },
+        "Prefetch": {
+          "ScannedCount": 313,
+          "SuspiciousMatches": []
+        },
+        "BamRegistry": {
+          "RecentApps": [
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\csrss.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\explorer.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\Sysprep\\sysprep.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\ApplicationFrameHost.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\dllhost.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\winver.exe",
+            "\\Device\\HarddiskVolume2\\Program Files\\Internet Explorer\\iexplore.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\cmd.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Rockstar Games\\Launcher\\Launcher.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app\\data\\cache\\subprocess\\FiveM_b3258_GTAProcess.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\ClownfishVoiceChanger\\ClownfishVoiceChanger.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\NVIDIA Corporation\\NVIDIA App\\CEF\\NVIDIA Overlay.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\explorer.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\GigabyteDownloadAssistant.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Roaming\\Spotify\\Spotify.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Rockstar Games\\Social Club\\SocialClubHelper.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\ApplicationFrameHost.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Cloudflare\\Cloudflare WARP\\Cloudflare WARP.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\rundll32.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\dllhost.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\WinRAR\\WinRAR.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Programs\\Microsoft VS Code\\Code.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\SnippingTool.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+            "\\Device\\HarddiskVolume3\\Riot Games\\Riot Client\\RiotClientServices.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\Riot Vanguard\\vgtray.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Programs\\WinSCP\\WinSCP.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\Taskmgr.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Windows Media Player\\wmplayer.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\WerFault.exe",
+            "\\Device\\HarddiskVolume3\\xampp\\xampp-control.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\7-Zip\\7zG.exe",
+            "\\Device\\HarddiskVolume3\\Program Files\\NVIDIA Corporation\\NVIDIA App\\CEF\\NVIDIA App.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app\\data\\cache\\subprocess\\FiveM_b3570_GTAProcess.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Desktop\\sv\\FXServer.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\FiveM\\FiveM.app\\data\\cache\\subprocess\\FiveM_b3323_GTAProcess.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\EaseOfAccessDialog.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Discord\\app-1.0.9266\\Discord.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\Downloads\\SteamSetup.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Steam\\Steam.exe",
+            "\\Device\\HarddiskVolume3\\Program Files (x86)\\Steam\\bin\\cef\\cef.win64\\steamwebhelper.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\Programs\\antigravity\\Antigravity.exe",
+            "\\Device\\HarddiskVolume3\\Users\\Administrator\\AppData\\Local\\antigravity-updater\\pending\\Antigravity-x64.exe",
+            "\\Device\\HarddiskVolume2\\Windows\\System32\\dwm.exe",
+            "\\Device\\HarddiskVolume3\\Windows\\System32\\dwm.exe"
+          ]
+        },
+        "UsbHistory": {
+          "Devices": [
+            "Disk&Ven_hp&Prod_v250w&Rev_PMAP"
+          ]
+        },
+        "RecentDeleted": {
+          "Files": []
+        },
+        "Processes": {
+          "ScannedCount": 169,
+          "SuspiciousProcesses": []
+        },
+        "Flags": []
+      },
+      "completedAt": "2026-10-30T20:52:15.429Z"
+    }
+  ]
+}

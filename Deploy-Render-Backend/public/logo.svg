@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="gradRed" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ef4444" />
+      <stop offset="50%" stop-color="#dc2626" />
+      <stop offset="100%" stop-color="#991b1b" />
+    </linearGradient>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18181b" />
+      <stop offset="100%" stop-color="#09090b" />
+    </linearGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Outer Rounded Shield / Hexagon -->
+  <rect x="10" y="10" width="180" height="180" rx="36" fill="url(#bgGrad)" stroke="#27272a" stroke-width="3" />
+  
+  <!-- Cyber Reticle Ring -->
+  <circle cx="100" cy="100" r="70" fill="none" stroke="#ef4444" stroke-width="2.5" stroke-dasharray="14 8" opacity="0.4" />
+  <circle cx="100" cy="100" r="58" fill="none" stroke="url(#gradRed)" stroke-width="3" filter="url(#glow)" opacity="0.9" />
+
+  <!-- Target Crosshairs -->
+  <line x1="100" y1="20" x2="100" y2="38" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+  <line x1="100" y1="162" x2="100" y2="180" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+  <line x1="20" y1="100" x2="38" y2="100" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+  <line x1="162" y1="100" x2="180" y2="100" stroke="#ef4444" stroke-width="3" stroke-linecap="round" />
+
+  <!-- 47 Monogram Typography -->
+  <g fill="url(#gradRed)" filter="url(#glow)">
+    <!-- Number 4 -->
+    <path d="M68 62 L52 110 L84 110 L84 128 L94 128 L94 110 L102 110 L102 96 L94 96 L94 62 Z M68 96 L78 74 L84 74 L84 96 Z" fill="#ffffff" />
+    <!-- Number 7 -->
+    <path d="M106 62 L146 62 L146 76 L124 138 L108 138 L128 78 L106 78 Z" fill="#ef4444" />
+  </g>
+
+  <!-- Small accent dots -->
+  <circle cx="100" cy="100" r="4" fill="#ffffff" />
+</svg>

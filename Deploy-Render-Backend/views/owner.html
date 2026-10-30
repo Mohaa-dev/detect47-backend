@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>47Detect | Master Vault</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-zinc-950 text-zinc-100 font-sans min-h-screen">
+
+  <!-- Secret Vault Authentication Overlay -->
+  <div id="authOverlay" class="fixed inset-0 bg-zinc-950/98 backdrop-blur-xl z-50 flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-8 shadow-2xl text-center">
+      <div class="w-16 h-16 rounded-2xl bg-red-500/10 text-red-500 mx-auto flex items-center justify-center text-3xl mb-4 border border-red-500/20">
+        <i class="fa-solid fa-lock"></i>
+      </div>
+      <h2 class="text-2xl font-black tracking-tight text-white">47DETECT MASTER VAULT</h2>
+      <p class="text-xs text-zinc-400 mt-1 mb-6">Restricted access for master administrator only.</p>
+      
+      <form id="authForm" onsubmit="handleLogin(event)" class="space-y-4">
+        <div class="text-left">
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Master Security Key</label>
+          <input type="password" id="secretInput" required autocomplete="off"
+            class="w-full px-4 py-3 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+        </div>
+        <p id="authError" class="text-xs text-red-500 hidden font-semibold"></p>
+        <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:opacity-90 text-white font-bold transition flex items-center justify-center gap-2 text-sm shadow-lg shadow-red-600/30">
+          <i class="fa-solid fa-key"></i> Authenticate & Unlock
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Dashboard Container -->
+  <div id="appContainer" class="hidden min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <header class="border-b border-zinc-800 bg-zinc-900/60 backdrop-blur px-6 py-4 sticky top-0 z-40">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-red-600 flex items-center justify-center text-white font-black text-lg">
+            47
+          </div>
+          <div>
+            <h1 class="text-base font-bold text-white flex items-center gap-2">
+              47DETECT <span class="text-xs px-2 py-0.5 rounded bg-red-500/20 text-red-400 font-mono">Master Vault</span>
+            </h1>
+          </div>
+        </div>
+        <div class="flex items-center space-x-3">
+          <a href="/portal" target="_blank" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-300 flex items-center gap-1.5">
+            <i class="fa-solid fa-arrow-up-right-from-square"></i> Open Customer Portal
+          </a>
+          <button onclick="logout()" class="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-300 hover:bg-zinc-700 flex items-center gap-1.5">
+            <i class="fa-solid fa-lock"></i> Lock Vault
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-8 flex-1 w-full space-y-8">
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div class="p-6 rounded-2xl bg-zinc-900 border border-zinc-800">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Total Servers</span>
+            <span class="w-8 h-8 rounded-lg bg-red-500/10 text-red-400 flex items-center justify-center text-sm"><i class="fa-solid fa-server"></i></span>
+          </div>
+          <div id="statTotalLicenses" class="text-3xl font-black text-white mt-3">0</div>
+          <span class="text-xs text-zinc-500 mt-1 block">Registered customers</span>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-zinc-900 border border-zinc-800">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Active Subscriptions</span>
+            <span class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-sm"><i class="fa-solid fa-circle-check"></i></span>
+          </div>
+          <div id="statActiveLicenses" class="text-3xl font-black text-emerald-400 mt-3">0</div>
+          <span class="text-xs text-zinc-500 mt-1 block">Paid & live licenses</span>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-zinc-900 border border-zinc-800">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Total Checks Run</span>
+            <span class="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center text-sm"><i class="fa-solid fa-radar"></i></span>
+          </div>
+          <div id="statTotalChecks" class="text-3xl font-black text-white mt-3">0</div>
+          <span class="text-xs text-zinc-500 mt-1 block">Total scans performed</span>
+        </div>
+
+        <div class="p-6 rounded-2xl bg-zinc-900 border border-zinc-800">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-zinc-400 uppercase tracking-wider">Cheats Caught</span>
+            <span class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center text-sm"><i class="fa-solid fa-triangle-exclamation"></i></span>
+          </div>
+          <div id="statFlaggedChecks" class="text-3xl font-black text-rose-400 mt-3">0</div>
+          <span class="text-xs text-zinc-500 mt-1 block">Detections flagged</span>
+        </div>
+      </div>
+
+      <!-- License Management -->
+      <div class="bg-zinc-900 border border-zinc-800 rounded-3xl p-6">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+          <div>
+            <h2 class="text-xl font-bold text-white">License &amp; Access Controls</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Control subscription duration, user limits, and activation states</p>
+          </div>
+          <button onclick="openCreateModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 text-white font-bold transition text-sm flex items-center gap-2 shadow-lg shadow-red-600/20">
+            <i class="fa-solid fa-plus"></i> Issue New Server License
+          </button>
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm">
+            <thead class="text-xs text-zinc-400 uppercase bg-zinc-950/60 border-y border-zinc-800">
+              <tr>
+                <th class="py-3 px-4">Server Name</th>
+                <th class="py-3 px-4">License Key</th>
+                <th class="py-3 px-4">Plan</th>
+                <th class="py-3 px-4">Max Users Limit</th>
+                <th class="py-3 px-4">Expiration / Remaining</th>
+                <th class="py-3 px-4">Status</th>
+                <th class="py-3 px-4 text-right">Actions</th>
+              </tr>
+            </thead>
+            <tbody id="licensesTableBody" class="divide-y divide-zinc-800/60">
+              <tr>
+                <td colspan="7" class="py-8 text-center text-zinc-500">Loading licenses...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Create License Modal -->
+  <div id="createModal" class="fixed inset-0 bg-zinc-950/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-zinc-900 border border-zinc-800 rounded-3xl p-6 shadow-2xl">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-lg font-bold text-white flex items-center gap-2">
+          <i class="fa-solid fa-key text-red-500"></i> Issue New License Key
+        </h3>
+        <button onclick="closeCreateModal()" class="text-zinc-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="createLicenseForm" onsubmit="handleCreateLicense(event)" class="space-y-4">
+        <div>
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Customer / Server Name</label>
+          <input type="text" id="newServerName" placeholder="e.g. DZ Roleplay Official" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold text-zinc-400 block mb-1">Plan Tier</label>
+            <select id="newPlan" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+              <option value="Basic">Starter ($20)</option>
+              <option value="Pro" selected>Pro Community ($40)</option>
+              <option value="Enterprise">Enterprise ($180)</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-zinc-400 block mb-1">Duration (Time Limit)</label>
+            <select id="newDuration" class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+              <option value="7">7 Days (1 Week)</option>
+              <option value="15">15 Days</option>
+              <option value="30" selected>30 Days (1 Month)</option>
+              <option value="90">90 Days (3 Months)</option>
+              <option value="180">180 Days (6 Months)</option>
+              <option value="365">365 Days (1 Year)</option>
+              <option value="9999">Lifetime (No Expiry)</option>
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Max Users / Staff Seats Limit</label>
+          <input type="number" id="newMaxUsers" value="10" min="1" max="500" required
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+          <p class="text-[11px] text-zinc-500 mt-1">Controls how many staff members can simultaneously use this license.</p>
+        </div>
+
+        <div>
+          <label class="text-xs font-semibold text-zinc-400 block mb-1">Discord Webhook (Optional)</label>
+          <input type="url" id="newWebhook" placeholder="https://discord.com/api/webhooks/..."
+            class="w-full px-3.5 py-2.5 rounded-xl bg-zinc-950 border border-zinc-700 text-white focus:outline-none focus:border-red-500 text-sm">
+        </div>
+
+        <div class="pt-2 flex gap-3">
+          <button type="button" onclick="closeCreateModal()" class="w-1/2 py-2.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-300 text-sm font-semibold">Cancel</button>
+          <button type="submit" class="w-1/2 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:opacity-90 text-white text-sm font-bold shadow-lg shadow-red-600/30">Issue Key</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    let ownerSecret = localStorage.getItem('47detect_owner_vault_key') || '';
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (ownerSecret) {
+        verifySecretAndLoad(ownerSecret);
+      }
+    });
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const secret = document.getElementById('secretInput').value.trim();
+      verifySecretAndLoad(secret);
+    }
+
+    async function verifySecretAndLoad(secret) {
+      try {
+        const res = await fetch('/api/owner/stats', {
+          headers: { 'x-owner-secret': secret }
+        });
+        if (res.ok) {
+          ownerSecret = secret;
+          localStorage.setItem('47detect_owner_vault_key', secret);
+          document.getElementById('authOverlay').classList.add('hidden');
+          document.getElementById('appContainer').classList.remove('hidden');
+          loadData();
+        } else {
+          showError("Access Denied: Invalid Security Key");
+        }
+      } catch (e) {
+        showError("Server Connection Failed");
+      }
+    }
+
+    function showError(msg) {
+      const err = document.getElementById('authError');
+      err.textContent = msg;
+      err.classList.remove('hidden');
+    }
+
+    function logout() {
+      localStorage.removeItem('47detect_owner_vault_key');
+      location.reload();
+    }
+
+    async function loadData() {
+      try {
+        const [statsRes, licRes] = await Promise.all([
+          fetch('/api/owner/stats', { headers: { 'x-owner-secret': ownerSecret } }),
+          fetch('/api/owner/licenses', { headers: { 'x-owner-secret': ownerSecret } })
+        ]);
+
+        const stats = await statsRes.json();
+        const licenses = await licRes.json();
+
+        document.getElementById('statTotalLicenses').textContent = stats.totalLicenses;
+        document.getElementById('statActiveLicenses').textContent = stats.activeLicenses;
+        document.getElementById('statTotalChecks').textContent = stats.totalChecks;
+        document.getElementById('statFlaggedChecks').textContent = stats.flaggedChecks;
+
+        renderLicenses(licenses);
+      } catch (err) {}
+    }
+
+    function renderLicenses(licenses) {
+      const tbody = document.getElementById('licensesTableBody');
+      if (!licenses || licenses.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-zinc-500">No licenses in vault yet.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = licenses.map(l => {
+        const isExpired = l.expiresAt && new Date(l.expiresAt) < new Date();
+        const statusBadge = l.status === 'suspended'
+          ? `<span class="px-2.5 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-xs font-semibold">Suspended</span>`
+          : isExpired
+            ? `<span class="px-2.5 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-xs font-semibold">Expired</span>`
+            : `<span class="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-semibold">Active</span>`;
+
+        const expiryStr = l.expiresAt 
+          ? new Date(l.expiresAt).toLocaleDateString() + ' (' + Math.ceil((new Date(l.expiresAt) - new Date()) / (1000 * 60 * 60 * 24)) + 'd left)'
+          : 'Lifetime';
+
+        const maxUsers = l.maxUsers || l.maxStaff || 10;
+
+        return `
+          <tr class="hover:bg-zinc-800/30 transition">
+            <td class="py-3 px-4 font-bold text-white">${l.serverName}</td>
+            <td class="py-3 px-4">
+              <span class="font-mono text-xs bg-zinc-950 px-2 py-1 rounded border border-zinc-800 text-red-400 font-bold select-all">${l.key}</span>
+              <button onclick="navigator.clipboard.writeText('${l.key}'); alert('License Key copied!')" class="text-xs text-zinc-400 hover:text-white ml-1.5" title="Copy Key">
+                <i class="fa-regular fa-copy"></i>
+              </button>
+            </td>
+            <td class="py-3 px-4"><span class="px-2 py-0.5 rounded text-xs bg-zinc-800 text-zinc-300 font-semibold">${l.plan}</span></td>
+            <td class="py-3 px-4 text-zinc-300 font-bold">${maxUsers} users limit</td>
+            <td class="py-3 px-4 text-xs text-zinc-400">${expiryStr}</td>
+            <td class="py-3 px-4">${statusBadge}</td>
+            <td class="py-3 px-4 text-right space-x-2">
+              <button onclick="extendLicense('${l.id}', 30)" class="text-xs px-2.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 text-zinc-300" title="Add 30 Days">+30d</button>
+              <button onclick="toggleLicenseStatus('${l.id}', '${l.status === 'active' ? 'suspended' : 'active'}')" class="text-xs px-2.5 py-1 rounded ${l.status === 'active' ? 'bg-amber-950/60 text-amber-400' : 'bg-emerald-950/60 text-emerald-400'}">
+                ${l.status === 'active' ? 'Suspend' : 'Activate'}
+              </button>
+              <button onclick="deleteLicense('${l.id}')" class="text-xs px-2.5 py-1 rounded bg-rose-950/60 text-rose-400 hover:bg-rose-900/60">
+                <i class="fa-solid fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function openCreateModal() {
+      document.getElementById('createModal').classList.remove('hidden');
+    }
+
+    function closeCreateModal() {
+      document.getElementById('createModal').classList.add('hidden');
+    }
+
+    async function handleCreateLicense(e) {
+      e.preventDefault();
+      const payload = {
+        serverName: document.getElementById('newServerName').value.trim(),
+        plan: document.getElementById('newPlan').value,
+        durationDays: document.getElementById('newDuration').value,
+        maxUsers: document.getElementById('newMaxUsers').value,
+        discordWebhook: document.getElementById('newWebhook').value.trim()
+      };
+
+      try {
+        const res = await fetch('/api/owner/licenses', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-owner-secret': ownerSecret
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (res.ok) {
+          const lic = await res.json();
+          alert('License generated successfully!\n\nKey: ' + lic.key);
+          closeCreateModal();
+          document.getElementById('createLicenseForm').reset();
+          loadData();
+        } else {
+          alert('Error creating license');
+        }
+      } catch (err) {
+        alert('Connection error');
+      }
+    }
+
+    async function extendLicense(id, days) {
+      if (!confirm(`Extend license duration by ${days} days?`)) return;
+      await fetch(`/api/owner/licenses/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-owner-secret': ownerSecret
+        },
+        body: JSON.stringify({ addDays: days })
+      });
+      loadData();
+    }
+
+    async function toggleLicenseStatus(id, newStatus) {
+      await fetch(`/api/owner/licenses/${id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'x-owner-secret': ownerSecret
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      loadData();
+    }
+
+    async function deleteLicense(id) {
+      if (!confirm('Permanently delete this license?')) return;
+      await fetch(`/api/owner/licenses/${id}`, {
+        method: 'DELETE',
+        headers: { 'x-owner-secret': ownerSecret }
+      });
+      loadData();
+    }
+  </script>
+</body>
+</html>
